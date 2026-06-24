@@ -1,35 +1,145 @@
 # IT Corporate User Provisioning Simulator
 
-A specialized Identity and Access Management (IAM) automation script utility designed to simulate employee account onboarding, automated enterprise email standardization, corporate directory path mapping, and role-based Active Directory (AD) security group allocation.
+Built by Dean Wilshaw.
 
-### Frontend Architecture & IAM Logic
+IT Corporate User Provisioning Simulator is a React-based Identity and Access Management demo that models employee onboarding logic for Active Directory-style environments. It transforms new-hire input into standardized usernames, corporate email addresses, temporary credentials, home directory paths, and department-specific security group assignments.
+
+The project demonstrates practical IAM automation thinking in a safe frontend environment: input sanitization, deterministic identity generation, role-based access mapping, and instant provisioning output for technician review.
+
+### Visual Output / Preview
 
 ![User Provisioning Dashboard](image_7e11bb.png)
 
-The simulator is a Vite React frontend that keeps the provisioning workflow client-side for safe portfolio demonstration. The UI captures new-hire details, processes them through deterministic IAM rules, and renders the generated account profile immediately.
+```text
+┌─────────────────────────┬──────────────────────────────────────────────┐
+│ Provisioning Field      │ Generated Example                            │
+├─────────────────────────┼──────────────────────────────────────────────┤
+│ sAMAccountName          │ jsmith                                       │
+│ User Principal Name     │ john.smith@corporate-it.com                  │
+│ Home Directory          │ \\corp-storage\home\jsmith                   │
+│ Base Groups             │ Domain Users, Corporate-VPN-Access           │
+│ Department Groups       │ IT-ServiceDesk-Tier1, Local-Admins           │
+└─────────────────────────┴──────────────────────────────────────────────┘
+```
 
-- **Username generation:** First and last names are trimmed, lowercased, and sanitized with `/[^a-z0-9]/g` to remove symbols before producing a `sAMAccountName` pattern such as `jdoe`.
-- **UPN/email standardization:** Sanitized names are combined into the corporate identity format `firstname.lastname@corporate-it.com`.
-- **Active Directory group mapping:** The selected department maps to a base access set plus department-specific security groups, such as `IT-ServiceDesk-Tier1`, `Finance-SAGE-Access`, `HR-Personnel-Records`, or `Warehouse-WMS-Cloud`.
-- **Temporary credential flow:** The app generates a temporary password from a controlled character pool and appends complexity characters so the output resembles enterprise onboarding credentials.
-- **Home directory rule:** Provisioned users receive a simulated network home path in the format `\\corp-storage\home\username`.
+### Frontend Architecture & IAM Logic
 
-## Key Features
-* **Standardized Identity Generation Logic:** Converts raw text strings into strict, corporate-compliant sAMAccountName patterns (e.g., `dsmith`) and User Principal Names (UPN email patterns like `john.smith@corporate-it.com`).
-* **Algorithmic Input Sanitization:** Leverages RegEx string manipulation blocks to completely strip trailing whitespaces, symbols, and irregular special characters from inputs, guaranteeing database integrity.
-* **Role-Based Security Scaling:** Simulates automated department mapping, instantly dropping provisioned profiles into their corresponding enterprise security groups (e.g., mapping an Operations starter into `Warehouse-WMS-Cloud` and `Inventory-Audit-Users`).
-* **Temporary Credential Engineering:** Utilizes index-swapping loop generation algorithms to output complex, 15-character temporary passwords matching standard corporate administrative complexity profiles.
+- **Client-side workflow:** The simulator keeps all provisioning logic in React state so the demo is safe, repeatable, and does not touch real directory services.
+- **Input sanitization:** First and last names are trimmed, lowercased, and cleaned with `/[^a-z0-9]/g` to prevent symbols from breaking account naming rules.
+- **Username generation:** The app builds a `sAMAccountName` pattern from first initial plus sanitized surname, such as `jsmith`.
+- **UPN/email standardization:** Sanitized names are combined into `firstname.lastname@corporate-it.com`.
+- **Temporary credential generation:** A random password is generated from a controlled character pool and finished with complexity characters.
+- **Home directory mapping:** Each user receives a simulated network path in the format `\\corp-storage\home\username`.
+- **Department access model:** Department selection maps users into base access groups plus role-specific Active Directory security groups.
 
----
+## The Business Problem
 
-## 🛠️ Troubleshooting & Core Resolutions
+New employee onboarding requires consistent identity data, correct group membership, and clean handover evidence. Manual account creation can introduce naming mistakes, missing access groups, weak temporary credentials, or inconsistent home folder paths.
 
-During the engineering, data mapping, and algorithmic construction of this IAM engine, two standard structural logic and interface state blocks were resolved:
+Common operational problems include:
 
-### 1. Special Character Account Name Fragmentation
-* **Problem:** Entering names containing hyphens, apostrophes, or accidental symbols (e.g., "O'Connor" or "Jane-Doe") passed directly into the email and username generator, which would break actual Active Directory syntax policies and email server configurations.
-* **Resolution:** Implemented an input purification pipeline utilizing JavaScript RegEx filtering logic (`.replace(/[^a-z0-9]/g, '')`). This automatically strips non-alphanumeric elements, forcing usernames and email addresses to compress into compliant, machine-readable syntax frames while preserving the full display name.
+- Names with apostrophes, spaces, or symbols can break directory naming rules.
+- Usernames and email addresses may be generated inconsistently between technicians.
+- Security group membership is often copied manually from previous users.
+- Temporary credentials need predictable complexity without being reused.
+- Home directory paths must follow a standard storage convention.
+- Service desk teams need a safe way to demonstrate onboarding logic without using a real domain controller.
 
-### 2. State Mapping Interface Desynchronization
-* **Problem:** Modifying the target department dropdown selection did not dynamically update the underlying Active Directory security group preview container, leading to stale configuration views.
-* **Resolution:** Isolated as a standard state-hook synchronization gap. Re-engineered the layout array mapping to process the conditional evaluation method directly inside the core state change cycle. This bound the visual security badge outputs directly to the reactive user choice array, resulting in immediate UI synchronization when toggling departments.
+## The Solution & Architecture
+
+The app models a deterministic onboarding pipeline:
+
+```text
+New Hire Form
+     |
+     v
+Input Sanitization
+     |
+     +--> sAMAccountName Generation
+     |
+     +--> Corporate UPN / Email Generation
+     |
+     +--> Temporary Password Generation
+     |
+     +--> Department Security Group Mapping
+     |
+     v
+Provisioned Account Summary
+```
+
+## Department Group Mapping
+
+```text
+IT Support
+  Domain Users
+  Corporate-VPN-Access
+  IT-ServiceDesk-Tier1
+  Local-Admins
+  M365-Global-Reader
+
+Finance
+  Domain Users
+  Corporate-VPN-Access
+  Finance-SAGE-Access
+  Payroll-Folder-ReadWrite
+  BACS-Transfer-Users
+
+Human Resources
+  Domain Users
+  Corporate-VPN-Access
+  HR-Personnel-Records
+  Confidential-Salary-View
+  Onboarding-SLA-Managers
+
+Operations / Warehouse
+  Domain Users
+  Corporate-VPN-Access
+  Warehouse-WMS-Cloud
+  Inventory-Audit-Users
+  Logistics-Distribution-Group
+```
+
+## Technical Toolkit
+
+- React
+- Vite
+- JavaScript
+- React hooks
+- Regex-based input sanitization
+- Role-based access mapping
+- Browser-based IAM simulation UI
+
+## Local Execution Setup
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Production Readiness Notes
+
+- Move provisioning rules into a tested service layer before connecting to real directory APIs.
+- Add validation for duplicate usernames and reserved account names.
+- Add approval workflows for privileged groups such as local administrators.
+- Add audit logging for generated accounts and access decisions.
+- Add export support for CSV, JSON, or ticketing-system handoff.
+- Add unit tests for sanitization, department mapping, and password complexity rules.

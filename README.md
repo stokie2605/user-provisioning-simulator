@@ -2,6 +2,16 @@
 
 A specialized Identity and Access Management (IAM) automation script utility designed to simulate employee account onboarding, automated enterprise email standardization, corporate directory path mapping, and role-based Active Directory (AD) security group allocation.
 
+### Frontend Architecture & IAM Logic
+
+The simulator is a Vite React frontend that keeps the provisioning workflow client-side for safe portfolio demonstration. The UI captures new-hire details, processes them through deterministic IAM rules, and renders the generated account profile immediately.
+
+- **Username generation:** First and last names are trimmed, lowercased, and sanitized with `/[^a-z0-9]/g` to remove symbols before producing a `sAMAccountName` pattern such as `jdoe`.
+- **UPN/email standardization:** Sanitized names are combined into the corporate identity format `firstname.lastname@corporate-it.com`.
+- **Active Directory group mapping:** The selected department maps to a base access set plus department-specific security groups, such as `IT-ServiceDesk-Tier1`, `Finance-SAGE-Access`, `HR-Personnel-Records`, or `Warehouse-WMS-Cloud`.
+- **Temporary credential flow:** The app generates a temporary password from a controlled character pool and appends complexity characters so the output resembles enterprise onboarding credentials.
+- **Home directory rule:** Provisioned users receive a simulated network home path in the format `\\corp-storage\home\username`.
+
 ## Key Features
 * **Standardized Identity Generation Logic:** Converts raw text strings into strict, corporate-compliant sAMAccountName patterns (e.g., `dsmith`) and User Principal Names (UPN email patterns like `john.smith@corporate-it.com`).
 * **Algorithmic Input Sanitization:** Leverages RegEx string manipulation blocks to completely strip trailing whitespaces, symbols, and irregular special characters from inputs, guaranteeing database integrity.

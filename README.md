@@ -4,6 +4,8 @@ A specialized Identity and Access Management (IAM) automation script utility des
 
 ### Frontend Architecture & IAM Logic
 
+![User Provisioning Dashboard](image_7e11bb.png)
+
 The simulator is a Vite React frontend that keeps the provisioning workflow client-side for safe portfolio demonstration. The UI captures new-hire details, processes them through deterministic IAM rules, and renders the generated account profile immediately.
 
 - **Username generation:** First and last names are trimmed, lowercased, and sanitized with `/[^a-z0-9]/g` to remove symbols before producing a `sAMAccountName` pattern such as `jdoe`.

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { provisionAccount } from './provisioningLogic';
 
 function App() {
   const [firstName, setFirstName] = useState('');
@@ -6,55 +7,12 @@ function App() {
   const [department, setDepartment] = useState('IT Support');
   const [generatedAccount, setGeneratedAccount] = useState(null);
 
-  // Helper function to generate a secure random temporary password
-  function generateTemporaryPassword() {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*';
-    let password = '';
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password + '1a!'; // Ensures it meets standard complexity rules
-  }
-
-  // Map departments to standard Active Directory Security Groups
-  function getSecurityGroups(dept) {
-    const baseGroups = ['Domain Users', 'Corporate-VPN-Access'];
-    
-    switch (dept) {
-      case 'IT Support':
-        return [...baseGroups, 'IT-ServiceDesk-Tier1', 'Local-Admins', 'M365-Global-Reader'];
-      case 'Finance':
-        return [...baseGroups, 'Finance-SAGE-Access', 'Payroll-Folder-ReadWrite', 'BACS-Transfer-Users'];
-      case 'Human Resources':
-        return [...baseGroups, 'HR-Personnel-Records', 'Confidential-Salary-View', 'Onboarding-SLA-Managers'];
-      case 'Operations / Warehouse':
-        return [...baseGroups, 'Warehouse-WMS-Cloud', 'Inventory-Audit-Users', 'Logistics-Distribution-Group'];
-      default:
-        return baseGroups;
-    }
-  }
 
   function handleProvisionAccount(e) {
     e.preventDefault();
     if (!firstName.trim() || !lastName.trim()) return;
 
-    const sanitizedFirst = firstName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    const sanitizedLast = lastName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    // Standard corporate email pattern: firstname.lastname@company.com
-    const email = `${sanitizedFirst}.${sanitizedLast}@corporate-it.com`;
-    
-    // Standard Active Directory sAMAccountName (username) pattern: e.g., dwilshaw
-    const username = sanitizedFirst.charAt(0) + sanitizedLast;
-
-    const accountDetails = {
-      fullName: `${firstName} ${lastName}`,
-      username: username,
-      email: email,
-      tempPassword: generateTemporaryPassword(),
-      securityGroups: getSecurityGroups(department),
-      homeDirectory: `\\\\corp-storage\\home\\${username}`
-    };
+    const accountDetails = provisionAccount({ firstName, lastName, department });
 
     setGeneratedAccount(accountDetails);
   }

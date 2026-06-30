@@ -111,6 +111,21 @@ Operations / Warehouse
 - Role-based access mapping
 - Browser-based IAM simulation UI
 
+## ✅ Automated Testing
+
+The project includes a Jest unit test suite that covers the core IAM provisioning and sanitization logic:
+- **Input Sanitization:** Asserts that special characters, extra spaces, and symbols are stripped from first and last names.
+- **Credential Generation:** Validates that unique usernames, corporate email addresses, and secure temporary passwords are generated correctly.
+- **Group Mapping:** Confirms that selected departments are correctly mapped to corresponding Active Directory security groups.
+- **Account Provisioning:** Tests that full account objects are generated with the correct fields and types.
+
+To run the test suite locally:
+```bash
+npm run test
+```
+
+The GitHub Actions CI pipeline runs these tests automatically on every push.
+
 ## Local Execution Setup
 
 ### Install Dependencies

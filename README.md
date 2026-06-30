@@ -1,5 +1,7 @@
 # IT Corporate User Provisioning Simulator
 
+[![CI](https://github.com/stokie2605/user-provisioning-simulator/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/stokie2605/user-provisioning-simulator/actions/workflows/ci.yml)
+
 [🚀 Live Demo](https://user-provisioning-simulator.vercel.app)
 
 Built by Dean Wilshaw.

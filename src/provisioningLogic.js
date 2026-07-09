@@ -5,7 +5,11 @@ export function sanitizeNamePart(value) {
 export function generateUsername(firstName, lastName) {
   const sanitizedFirst = sanitizeNamePart(firstName);
   const sanitizedLast = sanitizeNamePart(lastName);
-  return sanitizedFirst.charAt(0) + sanitizedLast;
+  if (!sanitizedFirst && !sanitizedLast) {
+    return 'tempuser';
+  }
+  const username = (sanitizedFirst.charAt(0) || '') + sanitizedLast;
+  return username.slice(0, 20); // Active Directory sAMAccountName 20-character limit
 }
 
 export function generateCorporateEmail(firstName, lastName) {

@@ -17,6 +17,8 @@ test('sanitizes name parts for identity-safe account generation', () => {
 test('generates corporate usernames and email addresses from sanitized names', () => {
   assert.equal(generateUsername('Dean', 'Wilshaw'), 'dwilshaw');
   assert.equal(generateUsername(' Amy-Lou ', ' O\'Connor '), 'aoconnor');
+  assert.equal(generateUsername('A', 'VeryLongLastNameThatExceedsTwentyCharacters'), 'averylonglastnametha');
+  assert.equal(generateUsername('', ''), 'tempuser');
   assert.equal(generateCorporateEmail(' Amy-Lou ', ' O\'Connor '), 'amylou.oconnor@corporate-it.com');
 });
 
